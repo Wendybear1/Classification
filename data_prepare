@@ -1,0 +1,116 @@
+from __future__ import division
+import numpy as np
+import pandas as pd
+import os
+import tensorflow as tf
+from tensorflow.keras.optimizers import Adam
+
+
+
+
+
+
+
+
+
+
+import pandas as pd
+import os
+directory =r'C:/Users/wxiong/Documents/PHD/combine_features/PNES_with_tags/'
+keywords=['2']
+df_pnes = pd.DataFrame()
+dir_list = list(os.scandir(directory))
+dir_list.sort(key=lambda d:d.path)
+for entry in dir_list:
+    if (entry.path.endswith(".csv")) and entry.is_file():
+        df = pd.read_csv(entry.path, skipinitialspace=True, sep=",")
+        df = df[df["tags"].isin(keywords)]
+        df_pnes=df_pnes.append(df, ignore_index=True)
+print(df_pnes);
+print(len(df_pnes));
+my_list=np.zeros(len(df_pnes))
+print(my_list);print(len(my_list))
+df_pnes['type']=my_list
+print(df_pnes);
+print(df_pnes.isnull().sum())
+directory =r'C:/Users/wxiong/Documents/PHD/combine_features/ES_with_tags/'
+keywords=['2']
+df_es = pd.DataFrame()
+dir_list = list(os.scandir(directory))
+dir_list.sort(key=lambda d:d.path)
+for entry in dir_list:
+    if (entry.path.endswith(".csv")) and entry.is_file():
+        df = pd.read_csv(entry.path, skipinitialspace=True, sep=",")
+        df = df[df["tags"].isin(keywords)]
+        df_es=df_es.append(df, ignore_index=True)
+print(df_es);
+print(len(df_es));
+my_list=np.ones(len(df_es))
+print(my_list);print(len(my_list))
+df_es['type']=my_list
+print(df_es);
+print(df_es.isnull().sum())
+data_sum=df_es.append(df_pnes, ignore_index=True)
+print(data_sum)
+data_sum.to_csv('C:/Users/wxiong/Documents/PHD/combine_features/PNES_and_ES_preictal.csv')
+
+
+
+
+
+## critical slowing feature combination
+directory =r'C:/Users/wxiong/Documents/PHD/combine_features/PNES_with_tags_15min/test'
+df_pnes = pd.DataFrame()
+dir_list = list(os.scandir(directory))
+dir_list.sort(key=lambda d:d.path)
+for entry in dir_list:
+    if (entry.path.endswith(".csv")) and entry.is_file():
+        df = pd.read_csv(entry.path, skipinitialspace=True, sep=",")
+        indice = df.index[df["tags"] == 2].tolist()
+        index_new_1 = [x - 120 for x in indice]
+        df_pnes = df_pnes.append(df.iloc[index_new_1], ignore_index=True)
+    
+
+
+
+print(df_pnes);
+print(len(df_pnes));
+my_list=np.zeros(len(df_pnes))
+print(my_list);print(len(my_list))
+df_pnes['type']=my_list
+print(df_pnes);
+print(df_pnes.isnull().sum())
+
+
+directory =r'C:/Users/wxiong/Documents/PHD/combine_features/ES_with_tags_15min/test'
+df_es = pd.DataFrame()
+dir_list = list(os.scandir(directory))
+dir_list.sort(key=lambda d:d.path)
+for entry in dir_list:
+    if (entry.path.endswith(".csv")) and entry.is_file():
+        df = pd.read_csv(entry.path, skipinitialspace=True, sep=",")
+        indice = df.index[df["tags"] == 2].tolist()
+        
+        index_new = [x - 120 for x in indice]
+        df_es=df_es.append(df.iloc[index_new], ignore_index=True)
+
+print(df_es);
+print(len(df_es));
+my_list=2*np.ones(len(df_es))
+# my_list=np.ones(len(df_es))
+print(my_list);print(len(my_list))
+df_es['type']=my_list
+print(df_es);
+print(df_es.isnull().sum())
+data_sum=df_es.append(df_pnes, ignore_index=True)
+print(data_sum)
+data_sum.to_csv('C:/Users/wxiong/Documents/PHD/combine_features/PNES_preictal_and_ES_preictal(60min).csv')
+
+
+
+
+
+
+
+
+
